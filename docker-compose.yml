@@ -1,0 +1,11 @@
+services:
+    
+    static:
+        build: .
+        volumes:
+            - .:/code
+        command: 
+            - yarn 
+            - serve
+        ports:
+            - "1234:1234"
