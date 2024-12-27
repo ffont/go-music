@@ -8,10 +8,21 @@
     "watch": "parcel watch --no-cache --no-hmr --dist-dir static/dist",
     "build": "parcel build --dist-dir static/dist"
   },
+  "staticFiles": {
+    "staticPath": "static/src/public",
+    "staticOutPath": "public"
+  },
   "dependencies": {
     "@parcel/transformer-sass": "^2.13.3",
+    "@sabaki/immutable-gametree": "^1.9.4",
+    "@sabaki/sgf": "^3.4.7",
     "parcel": "^2.13.3",
     "tone": "^15.0.4"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "buffer": "^5.5.0||^6.0.0",
+    "parcel-reporter-static-files-copy": "^1.5.3",
+    "process": "^0.11.10",
+    "string_decoder": "^1.3.0"
+  }
 }

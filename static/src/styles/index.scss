@@ -1,2 +1,7 @@
 @import 'colors';
 @import 'base';
+
+// Hide last move markers
+.tenuki-svg-renderer.tenuki-board .intersection.territory-black .territory-marker, .tenuki-svg-renderer.tenuki-board .intersection.territory-white .territory-marker, .tenuki-svg-renderer.tenuki-board .intersection.ko .ko-marker, .tenuki-svg-renderer.tenuki-board .intersection.played .marker {
+    visibility: hidden;
+}
