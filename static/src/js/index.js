@@ -52,23 +52,20 @@ const playSGF = (sgfUrl) => {
             return new GameTree({getId, root: rootNode})
         })
         const rootTree = gameTrees[0]
+        let nodeList = [...rootTree.listNodes()]
+        const boardSize = parseInt(nodeList[0].data.SZ[0], 10);
     
         var boardElement = document.querySelector(".tenuki-board");
         boardElement.innerHTML = "";
         var game = new tenuki.Game({ 
             element: boardElement,
-            boardSize: 19,
+            boardSize: boardSize,
             _hooks: {
                 hoverValue: function() {}, // need to define empty hoverValue hook to avoid JS error
             }  // disable user interaction
         });
-    
-        let list = [...rootTree.listNodes()]
         
-        let currentNode = 0;
-        const intervalTime = 50;
-        let interval = undefined;
-    
+        
         // Every intervalTime milliseconds, play the next move
         // Time should be adjustable in real-time using a slider
     
@@ -78,18 +75,21 @@ const playSGF = (sgfUrl) => {
         }
     
         const playNextMove = () => {
-            const node = list[currentNode];
+            const node = nodeList[currentNode];
             const [x, y] = sgfNodeDataToXYCoordinates(node.data);
             if (x > -1 && y > -1) {
                 game.playAt(x, y)
             }
             currentNode++;
-            if (currentNode >= list.length) {
+            if (currentNode >= nodeList.length) {
                 clearInterval(interval);
             } else {
                 interval = setTimeout(playNextMove, tempoToMilliseconds(tempoSlider.value));
             }
         }
+
+        let currentNode = 0;
+        let interval = undefined;
         interval = setTimeout(playNextMove, tempoToMilliseconds(tempoSlider.value));
 
     }).catch(error => {
