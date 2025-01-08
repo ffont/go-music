@@ -8,14 +8,16 @@
     <link rel="stylesheet" href="./static/src/styles/index.scss">
 </head>
 <body>
-    <script type="module" src="./static/src/js/index.js"></script>
-
-    <div class="tenuki-board"></div>
+    <h1>GO Music!</h1>
     <div>
-        <input type="range" id="tempo_slider" name="sempo" min="30" max="220" value="111"><br>
-        <input type="text" id="sgf_url" value="./public/2016.03.10-Lee_Sedol-AlphaGo.sgf" placeholder="Your Go game SGF URL here!"><br>
+        <label for="sgf_url">SGF URL:</label><input type="text" id="sgf_url" value="https://online-go.com/api/v1/reviews/114754/sgf" placeholder="Your Go game SGF URL here!"><br>
+        <label for="tempo_slider">Tempo:</label><input type="range" id="tempo_slider" name="sempo" min="30" max="440" value="111"><br>
         <input type="button" id="play_button" value="Play">
+        <input type="button" id="stop_button" value="Stop">
+        <span id="loading_indicator"></span>
     </div>
-
+    <br>
+    <div class="tenuki-board"></div>
+    <script type="module" src="./static/src/js/index.js"></script>
 </body>
 </html>

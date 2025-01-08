@@ -1,15 +1,27 @@
 import * as sgf from '@sabaki/sgf'
 import * as GameTree from '@sabaki/immutable-gametree'
 import * as tenuki from './tenuki.js'
+import * as Tone from "tone";
+
+const synth = new Tone.PolySynth().toDestination();
+synth.set({
+    oscillator: {type: "sine"},
+    volume: -6
+});
 
 const tempoSlider = document.getElementById("tempo_slider");
 const sgfUrlInput = document.getElementById("sgf_url");
 const playButton = document.getElementById("play_button");
+const stopButton = document.getElementById("stop_button");
+const loadingIndicator = document.getElementById("loading_indicator");
 
 async function downloadSGFFile(url) {
+    loadingIndicator.innerHTML = "Loading...";
     try {
+        
         // Fetch the file contents from the URL
         const response = await fetch(url);
+        loadingIndicator.innerHTML = "";
 
         if (!response.ok) {
             throw new Error(`Failed to fetch the file: ${response.status} ${response.statusText}`);
@@ -25,6 +37,7 @@ async function downloadSGFFile(url) {
         // Return or process the parsed data as needed
         return parsedData;
     } catch (error) {
+        loadingIndicator.innerHTML = "Error downloading or parsing SGF file...";
         console.error("Error downloading or parsing the SGF file:", error);
         throw error;
     }
@@ -43,8 +56,11 @@ const sgfNodeDataToXYCoordinates = (nodeData) => {
     return [x, y]
 }
 
+let interval = undefined;
 
 const playSGF = (sgfUrl) => {
+    
+    Tone.start()
 
     downloadSGFFile(sgfUrl).then(parsedData => {
         let getId = (id => () => id++)(0)
@@ -73,12 +89,21 @@ const playSGF = (sgfUrl) => {
             // Return querter note length in milliseconds
             return 60000 / tempo / 4;
         }
+
+        const tempoToSeconds = (tempo) => {
+            return tempoToMilliseconds(tempo) / 1000;
+        }
     
         const playNextMove = () => {
             const node = nodeList[currentNode];
             const [x, y] = sgfNodeDataToXYCoordinates(node.data);
             if (x > -1 && y > -1) {
                 game.playAt(x, y)
+                const velocity = 0.3 + (y / boardSize) * 0.7;
+                const midiNote = x + 64;
+                synth.triggerAttackRelease([Tone.Frequency(midiNote, "midi").toNote()], [tempoToSeconds(tempoSlider.value) * 2], undefined, [velocity]);
+            } else {
+                console.log("Skipping move", node.data);
             }
             currentNode++;
             if (currentNode >= nodeList.length) {
@@ -89,7 +114,6 @@ const playSGF = (sgfUrl) => {
         }
 
         let currentNode = 0;
-        let interval = undefined;
         interval = setTimeout(playNextMove, tempoToMilliseconds(tempoSlider.value));
 
     }).catch(error => {
@@ -98,8 +122,29 @@ const playSGF = (sgfUrl) => {
 
 }
 
-playSGF(sgfUrlInput.value);
+const stopAll = () => {
+    clearInterval(interval);
+    synth.releaseAll();
+}
 
 playButton.addEventListener("click", () => {
+    stopAll();
     playSGF(sgfUrlInput.value);
+});
+
+stopButton.addEventListener("click", () => {
+    stopAll();
+});
+
+
+// start adding empty board
+
+var boardElement = document.querySelector(".tenuki-board");
+boardElement.innerHTML = "";
+var game = new tenuki.Game({ 
+    element: boardElement,
+    boardSize: 19,
+    _hooks: {
+        hoverValue: function() {}, // need to define empty hoverValue hook to avoid JS error
+    }  // disable user interaction
 });

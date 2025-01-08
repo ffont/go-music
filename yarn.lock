@@ -1605,11 +1605,6 @@ supports-color@^7.1.0:
   dependencies:
     has-flag "^4.0.0"
 
-tenuki@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/tenuki/-/tenuki-0.3.1.tgz#8b53cae9641ad83c7d817b1fe8277181d3d742c0"
-  integrity sha512-4obVv+CHn0QXrtHEZOYXE69xweUAae/iHfEz6oqM+dKTcdL8b0G44knfjLtepu4UHdwW0OzxurXDXoZKzKOIIQ==
-
 term-size@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/term-size/-/term-size-2.2.1.tgz#2a6a54840432c2fb6320fea0f415531e90189f54"
