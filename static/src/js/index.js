@@ -3,8 +3,14 @@ import * as GameTree from '@sabaki/immutable-gametree'
 import * as tenuki from './tenuki.js'
 import * as Tone from "tone";
 
-const synth = new Tone.PolySynth().toDestination();
-synth.set({
+const synthW = new Tone.PolySynth().toDestination();
+synthW.set({
+    oscillator: {type: "triangle"},
+    volume: -6
+});
+
+const synthB = new Tone.PolySynth().toDestination();
+synthB.set({
     oscillator: {type: "sine"},
     volume: -6
 });
@@ -101,7 +107,11 @@ const playSGF = (sgfUrl) => {
                 game.playAt(x, y)
                 const velocity = 0.3 + (y / boardSize) * 0.7;
                 const midiNote = x + 64;
-                synth.triggerAttackRelease([Tone.Frequency(midiNote, "midi").toNote()], [tempoToSeconds(tempoSlider.value) * 2], undefined, [velocity]);
+                if (node.data.B) {
+                    synthB.triggerAttackRelease([Tone.Frequency(midiNote, "midi").toNote()], [tempoToSeconds(tempoSlider.value)], undefined, [velocity]);
+                } else if (node.data.W) {
+                    synthW.triggerAttackRelease([Tone.Frequency(midiNote, "midi").toNote()], [tempoToSeconds(tempoSlider.value)], undefined, [velocity]);
+                }
             } else {
                 console.log("Skipping move", node.data);
             }
@@ -124,7 +134,8 @@ const playSGF = (sgfUrl) => {
 
 const stopAll = () => {
     clearInterval(interval);
-    synth.releaseAll();
+    synthW.releaseAll();
+    synthB.releaseAll();
 }
 
 playButton.addEventListener("click", () => {
