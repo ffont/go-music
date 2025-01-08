@@ -7,7 +7,7 @@
     "serve": "parcel serve -p 1234 --no-hmr --dist-dir static/dist",
     "watch": "parcel watch --no-cache --no-hmr --dist-dir static/dist",
     "build": "parcel build --dist-dir static/dist",
-    "build-production": "parcel build --dist-dir build"
+    "build-production": "mkdir -p static/src/public && parcel build --dist-dir build"
   },
   "staticFiles": {
     "staticPath": "static/src/public",
